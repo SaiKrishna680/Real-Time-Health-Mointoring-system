@@ -1,0 +1,444 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Healthcare Dashboard</title>
+    
+    <!-- Bootstrap & Font Awesome -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/js/all.min.js"></script>
+    
+    <!-- Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+    <!-- Google Font -->
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@700&display=swap" rel="stylesheet">
+
+    <style>
+        /* Navbar Styling */
+        .navbar {
+            background-color: #F8F9FA; 
+            box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.1);
+            padding: 10px 20px;
+            height: 80px;
+            position: sticky; /* Makes the navbar sticky */
+            top: 0; /* Sticks it to the top of the page */
+            z-index: 1000; /* Ensure it stays above other content when scrolling */
+        }
+        .navbar-brand img {
+            height: 70px;
+            width: 70px;
+            object-fit: cover;
+        }
+        .nav-text {
+            font-size: 18px;
+            font-weight: 600;
+            color: #333;
+            flex-grow: 1;
+            text-align: center;
+            margin: 0;
+        }
+
+        /* User Icon Button Styling */
+        .user-icon-btn {
+            background-color: #35b6b4;
+            color: white;
+            border-radius: 50%; /* Circle Shape */
+            padding: 10px;
+            font-size: 24px; /* Reduced icon size */
+            border: none;
+        }
+
+        .user-icon-btn:hover {
+            background-color: #2a8e8c;
+            cursor: pointer;
+        }
+
+        /* Dropdown Styling */
+        .dropdown-menu {
+            min-width: 200px;
+        }
+
+        .dropdown-item {
+            font-weight: 500;
+            color: #333;
+        }
+
+        .dropdown-item:hover {
+            background-color: #f1f1f1;
+        }
+
+        .logout-item {
+            color: red;
+            font-weight: 600;
+        }
+
+        /* Key Features Heading */
+        .features-heading {
+            font-family: 'Poppins', sans-serif;
+            font-size: 40px;
+            font-weight: bold;
+            text-align: center;
+            color: #004F9E;
+            margin-top: 60px;
+            position: relative;
+            cursor: pointer;
+            transition: color 0.3s ease-in-out;
+        }
+        
+        .features-heading::after {
+            content: "";
+            display: block;
+            width: 0;
+            height: 4px;
+            background-color: #35b6b4;
+            margin: auto;
+            transition: width 0.3s ease-in-out;
+        }
+
+        .features-heading:hover {
+            color: #35b6b4;
+        }
+
+        .features-heading:hover::after {
+            width: 0%;
+        }
+
+        /* Features Section */
+        .feature-item {
+            display: flex;
+            align-items: center;
+            gap: 25px; /* Proper spacing between icon and text */
+            padding: 15px 0;
+            font-size: 24px;
+            font-weight: 600;
+            transition: all 0.3s ease-in-out;
+            cursor: pointer;
+        }
+        .feature-item i {
+            font-size: 50px; /* Increased icon size */
+            color: #35b6b4;
+            transition: all 0.3s ease-in-out;
+        }
+        .feature-item:hover {
+            color: #35b6b4;
+            transform: translateX(7px);
+        }
+        .feature-item:hover i {
+            color: #2a8e8c;
+        }
+        
+        /* Image Styling */
+        .feature-image {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin-top: -30px; /* Move image slightly up */
+        }
+        .feature-image img {
+            width: 100%;
+            max-width: 650px; /* Increased image size */
+            display: block;
+        }
+
+        /* Graph Section */
+        .graph-section {
+            margin-top: 50px;
+            padding-bottom: 50px;
+        }
+        .graph-heading {
+            text-align: center;
+            font-size: 35px;
+            font-weight: bold;
+            margin-bottom: 20px;
+            color: #004F9E;
+            font-family: 'Poppins', sans-serif;
+        }
+        .chart-container {
+            background: #fff;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.1);
+            margin-bottom: 30px;
+        }
+
+        /* New Section for Quote */
+        .quote-section {
+            background-color: #f0f0f0; /* Dim white light color */
+            color: black; /* Adjust text color to be more readable on light background */
+            text-align: center;
+            padding: 40px 20px;
+            margin-top: 50px;
+            border-radius: 8px;
+        }
+        .quote-section h3 {
+            font-size: 32px;
+            font-weight: 700;
+            margin-bottom: 20px;
+            font-family: 'Poppins', sans-serif;
+        }
+        .quote-section p {
+            font-size: 20px;
+            font-weight: 500;
+            font-style: italic;
+            max-width: 800px;
+            margin: 0 auto;
+            line-height: 1.5;
+        }
+
+        /* Footer Styling */
+        .footer {
+            background-color: #004F9E;
+            color: white;
+            padding: 30px 20px;
+        }
+        .footer .footer-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+        }
+        .footer .footer-section {
+            width: 32%; /* Dividing footer into 3 parts */
+            padding: 15px;
+        }
+        .footer .footer-section h4 {
+            font-size: 24px;
+            font-weight: 700;
+            margin-bottom: 20px;
+        }
+        .footer .footer-section p, .footer .footer-section label {
+            font-size: 16px;
+            margin-bottom: 10px;
+        }
+        .footer .footer-section form input[type="email"] {
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 15px;
+            border-radius: 5px;
+            border: none;
+            font-size: 16px;
+        }
+        .footer .footer-section form button {
+            background-color: #35b6b4;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        .footer .footer-section form button:hover {
+            background-color: #2a8e8c;
+        }
+    </style>
+</head>
+<body>
+
+<!-- Navbar -->
+<nav class="navbar navbar-expand-lg">
+    <div class="container d-flex justify-content-between align-items-center w-100">
+        <a class="navbar-brand me-auto" href="#">
+            <img src="https://i.ibb.co/Q7fgvRSR/Whats-App-Image-2025-03-23-at-07-39-01-a4f5cba5.jpg" alt="Logo">
+        </a>
+        <p class="nav-text">"Monitoring Made Simple, Health Made Smarter."</p>
+        <div class="d-flex ms-auto">
+            <!-- User Icon and Dropdown -->
+            <div class="dropdown">
+                <button class="user-icon-btn" type="button" id="userDropdown" data-bs-toggle="dropdown" aria-expanded="false">
+                    <i class="fas fa-user-circle"></i>
+                </button>
+                <ul class="dropdown-menu" aria-labelledby="userDropdown">
+                    <li><h6 class="dropdown-header">User Details</h6></li>
+                    <li><a class="dropdown-item" href="#">Name: John Doe</a></li>
+                    <li><a class="dropdown-item" href="#">Role: Patient</a></li>
+                    <li><a class="dropdown-item" href="#">Age: 30</a></li>
+                    <li><a class="dropdown-item" href="#">Condition: Hypertension</a></li>
+                    <li><hr class="dropdown-divider"></li>
+                    <li><a class="dropdown-item logout-item" href="#">Logout</a></li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</nav>
+
+<!-- Main Content -->
+<div class="container">
+    <h2 class="features-heading">Key Features</h2>
+
+    <div class="row mt-4">
+        <!-- Features List -->
+        <div class="col-md-6">
+            <div class="feature-item">
+                <i class="fas fa-thermometer-half"></i>
+                <span>Room Temperature Monitoring</span>
+            </div>
+            <div class="feature-item">
+                <i class="fas fa-tint"></i>
+                <span>Room Humidity Tracking</span>
+            </div>
+            <div class="feature-item">
+                <i class="fas fa-heartbeat"></i>
+                <span>Heart Rate Measurement</span>
+            </div>
+            <div class="feature-item">
+                <i class="fas fa-lungs"></i>
+                <span>SpO2 Oxygen Level Monitoring</span>
+            </div>
+            <div class="feature-item">
+                <i class="fas fa-temperature-high"></i>
+                <span>Body Temperature Checking</span>
+            </div>
+        </div>
+
+        <!-- Image Section -->
+        <div class="col-md-6">
+            <div class="feature-image">
+                <img src="https://www.maxhealthcare.in/img/doctor-consult-illustration.svg" alt="Doctor Illustration" style="margin-top: 15px;">
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Graph Section -->
+<div class="container graph-section">
+    <h2 class="graph-heading">Real-Time Health Monitoring</h2>
+    <div class="row">
+        <!-- Graph for Temperature -->
+        <div class="col-md-6">
+            <div class="chart-container">
+                <h5>Temperature (°C)</h5>
+                <canvas id="tempChart"></canvas>
+            </div>
+        </div>
+        <!-- Graph for Humidity -->
+        <div class="col-md-6">
+            <div class="chart-container">
+                <h5>Humidity (%)</h5>
+                <canvas id="humidityChart"></canvas>
+            </div>
+        </div>
+        <!-- Graph for Heart Rate -->
+        <div class="col-md-6">
+            <div class="chart-container">
+                <h5>Heart Rate (bpm)</h5>
+                <canvas id="heartRateChart"></canvas>
+            </div>
+        </div>
+        <!-- Graph for SpO2 -->
+        <div class="col-md-6">
+            <div class="chart-container">
+                <h5>SpO2 (%)</h5>
+                <canvas id="spo2Chart"></canvas>
+            </div>
+        </div>
+        <!-- Graph for Body Temperature -->
+        <div class="col-md-6">
+            <div class="chart-container">
+                <h5>Body Temperature (°C)</h5>
+                <canvas id="bodyTempChart"></canvas>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- New Section for Quote -->
+<div class="quote-section">
+    <h3>Healthcare for good. <br>Today. Tomorrow. Always.</h3>
+    <p>"Our goal is to improve the health of individuals and communities through continuous innovation and commitment to excellence. We believe in a better, healthier tomorrow with technology at its core."</p>
+</div>
+
+<!-- Footer Section -->
+<div class="footer">
+    <div class="footer-content container d-flex justify-content-between">
+        <!-- Developer Information -->
+        <div class="footer-section">
+            <h4>About the Developers</h4>
+            <p><strong>Manoj:</strong> Lead Developer, Hardware Integrator</p>
+            <p><strong>Chakka Sraeyes:</strong> Backend Development (Arduino IDE)</p>
+            <p><strong>Nooka Sai Krishna:</strong> Backend and Frontend Development</p>
+            <p><strong>Eshwar Anand Rainikindi:</strong> Frontend Development</p>
+            <p><strong>Sujith:</strong> Testing and Documentation</p>
+        </div>
+
+        <!-- Contact Form -->
+        <div class="footer-section">
+            <h4>Contact Us</h4>
+            <p>If you have any queries, feel free to contact us by sending your email:</p>
+            <form action="#" method="POST">
+                <label for="email">Email Address:</label>
+                <input type="email" id="email" name="email" placeholder="Enter your email" required>
+                <button type="submit">Send</button>
+            </form>
+        </div>
+
+        <!-- Social Media Links -->
+        <div class="footer-section">
+            <h4>Follow Us</h4>
+            <a href="#"><i class="fab fa-facebook"></i></a>
+            <a href="#"><i class="fab fa-twitter"></i></a>
+            <a href="#"><i class="fab fa-linkedin"></i></a>
+        </div>
+    </div>
+</div>
+
+<!-- JavaScript -->
+<script>
+    // Chart.js Initialization and Data
+    function generateChart(ctx, label, min, max) {
+        const data = Array.from({length: 5}, () => Math.random() * (max - min) + min);
+
+        return new Chart(ctx, {
+            type: 'line',
+            data: {
+                labels: ["1s", "2s", "3s", "4s", "5s"],
+                datasets: [{
+                    label,
+                    data,
+                    borderColor: 'transparent', // No line color
+                    backgroundColor: 'transparent', // No fill
+                    fill: false, // No filling of the area under the graph
+                    borderWidth: 0 // No border (line)
+                }]
+            },
+            options: {
+                scales: {
+                    y: {
+                        min,
+                        max
+                    }
+                },
+                plugins: {
+                    legend: {
+                        display: false // Hide the legend
+                    },
+                    tooltip: {
+                        enabled: false // Disable tooltips on hover
+                    }
+                }
+            }
+        });
+    }
+
+    window.onload = function() {
+        // Initialize charts without lines or values
+        const tempCtx = document.getElementById('tempChart').getContext('2d');
+        generateChart(tempCtx, 'Temperature (°C)', 18, 30);
+
+        const humidityCtx = document.getElementById('humidityChart').getContext('2d');
+        generateChart(humidityCtx, 'Humidity (%)', 30, 80);
+
+        const heartRateCtx = document.getElementById('heartRateChart').getContext('2d');
+        generateChart(heartRateCtx, 'Heart Rate (bpm)', 60, 100);
+
+        const spo2Ctx = document.getElementById('spo2Chart').getContext('2d');
+        generateChart(spo2Ctx, 'SpO2 (%)', 90, 100);
+
+        const bodyTempCtx = document.getElementById('bodyTempChart').getContext('2d');
+        generateChart(bodyTempCtx, 'Body Temperature (°C)', 35, 40);
+    }
+</script>
+
+</body>
+</html>
+```
